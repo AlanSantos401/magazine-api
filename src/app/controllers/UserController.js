@@ -37,12 +37,16 @@ class UserController {
         .json({ message: 'Este e-mail já está cadastrado!' });
     }
 
+    const email_code = v4();
+
     const user = await User.create({
       id: v4(),
       name,
       email,
       password_hash,
       admin,
+      email_code,
+      email_confirmed: false,
     });
 
     return response.status(201).json({

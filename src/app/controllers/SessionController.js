@@ -16,11 +16,13 @@ class SessionController {
     });
 
     const emailOrPasswordIncorrect = () => {
-      return response.status(400).json({ error: 'Email ou senha incorreta!' });
+      return response.status(400).json({
+        error: 'Email ou senha incorreta!',
+      });
     };
 
     if (!isValid) {
-      emailOrPasswordIncorrect();
+      return emailOrPasswordIncorrect();
     }
 
     const { email, password } = request.body;
@@ -32,16 +34,22 @@ class SessionController {
     });
 
     if (!existingUser) {
-      emailOrPasswordIncorrect();
+      return emailOrPasswordIncorrect();
     }
 
-    const isPassowordCorrect = await bcrypt.compare(
+    if (!existingUser.email_confirmed) {
+      return response.status(401).json({
+        error: 'Confirme seu email antes de fazer login',
+      });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(
       password,
       existingUser.password_hash,
     );
 
-    if (!isPassowordCorrect) {
-      emailOrPasswordIncorrect();
+    if (!isPasswordCorrect) {
+      return emailOrPasswordIncorrect();
     }
 
     return response.status(200).json({
