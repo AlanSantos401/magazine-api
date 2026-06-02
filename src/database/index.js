@@ -1,9 +1,11 @@
 import { Sequelize } from 'sequelize';
 import Category from '../app/models/Category.js';
+import Product from '../app/models/Product.js';
 import User from '../app/models/User.js';
+
 import databaseConfig from '../config/database.cjs';
 
-const models = [User, Category];
+const models = [User, Product, Category];
 
 class Database {
   constructor() {
@@ -12,7 +14,15 @@ class Database {
 
   init() {
     this.connection = new Sequelize(databaseConfig);
-    models.map((model) => model.init(this.connection));
+    models.forEach((model) => {
+      model.init(this.connection);
+    });
+
+    models.forEach((model) => {
+      if (model.associate) {
+        model.associate(this.connection.models);
+      }
+    });
   }
 }
 
