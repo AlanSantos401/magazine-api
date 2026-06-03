@@ -7,8 +7,14 @@ class ProductController {
       name: Yup.string().required(),
       description: Yup.string(),
       brand: Yup.string().required(),
+
+      old_price: Yup.number(),
       price: Yup.number().required(),
       offer_price: Yup.number(),
+
+      installments: Yup.number(),
+      product_condition: Yup.string(),
+
       stock: Yup.number().required(),
       featured: Yup.boolean(),
       warranty: Yup.number(),
@@ -29,8 +35,14 @@ class ProductController {
       name,
       description,
       brand,
+
+      old_price,
       price,
       offer_price,
+
+      installments,
+      product_condition,
+
       stock,
       featured,
       warranty,
@@ -43,12 +55,19 @@ class ProductController {
       name,
       description,
       brand,
+
+      old_price,
       price,
       offer_price,
+
+      installments,
+      product_condition,
+
       stock,
       featured,
       warranty,
       category_id,
+
       path: filename,
     });
 
@@ -59,6 +78,53 @@ class ProductController {
     const products = await Product.findAll();
 
     return response.status(200).json(products);
+  }
+
+  async update(request, response) {
+    const schema = Yup.object({
+      old_price: Yup.number(),
+      price: Yup.number(),
+      offer_price: Yup.number(),
+      stock: Yup.number(),
+    });
+
+    try {
+      await schema.validate(request.body, {
+        abortEarly: false,
+      });
+    } catch (err) {
+      return response.status(400).json({
+        error: err.errors,
+      });
+    }
+
+    const { id } = request.params;
+
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+      return response.status(404).json({
+        error: 'Produto não encontrado',
+      });
+    }
+
+    await product.update(request.body);
+
+    return response.json({message: "Produto atualizado com sucesso", product});
+  }
+
+  async delete(request, response) {
+    const {id} = request.params
+
+    const product = await Product.findByPk(id)
+
+    if(!product) {
+      return response.status(404).json({error: 'Produto não encontrado'})
+    }
+
+    await product.destroy()
+
+    return response.status(200).json({message: "Produto excluído com sucesso"})
   }
 }
 

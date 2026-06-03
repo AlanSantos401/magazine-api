@@ -8,6 +8,8 @@ import ResetPasswordController from './app/controllers/ResetPasswordController.j
 import SessionController from './app/controllers/SessionController.js';
 import UserController from './app/controllers/UserController.js';
 import multerConfig from './config/multer.cjs';
+import authMiddleware from './middlewares/auth.js';
+import AdminMiddleware from './middlewares/admin.js';
 
 const routes = new Router();
 
@@ -21,10 +23,18 @@ routes.get('/confirm-email', ConfirmEmailController.update);
 routes.post('/forgot-password', ForgotPasswordController.store);
 routes.put('/reset-password', ResetPasswordController.update);
 
-routes.post('/categories', CategoryController.store);
-routes.get('/categories', CategoryController.index);
-
-routes.post('/products', upload.single('file'), ProductController.store);
+routes.use(authMiddleware);
+routes.post(
+  '/products',
+  AdminMiddleware,
+  upload.single('file'),
+  ProductController.store,
+);
 routes.get('/products', ProductController.index);
+routes.patch('/products/:id', AdminMiddleware, ProductController.update);
+routes.delete('/products/:id', AdminMiddleware, ProductController.delete)
+
+routes.post('/categories', AdminMiddleware, CategoryController.store);
+routes.get('/categories', CategoryController.index);
 
 export default routes;

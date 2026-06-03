@@ -1,6 +1,5 @@
-import * as Yup from 'yup';
 import slugify from 'slugify';
-
+import * as Yup from 'yup';
 import Category from '../models/Category.js';
 
 class CategoryController {

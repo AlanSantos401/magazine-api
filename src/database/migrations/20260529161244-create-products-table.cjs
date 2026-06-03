@@ -26,6 +26,34 @@ module.exports = {
         allowNull: false,
       },
 
+      old_price: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true,
+      },
+
+      installments: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 12,
+      },
+
+      product_condition: {
+        type: Sequelize.ENUM('new', 'used'),
+        allowNull: false,
+        defaultValue: 'new',
+      },
+
+      average_rating: {
+        type: Sequelize.DECIMAL(3, 2),
+        allowNull: false,
+        defaultValue: 0,
+      },
+
+      reviews_count: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       price: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,

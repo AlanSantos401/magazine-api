@@ -7,18 +7,28 @@ class Product extends Model {
         name: Sequelize.STRING,
         description: Sequelize.STRING,
         brand: Sequelize.STRING,
+
+        old_price: Sequelize.DECIMAL,
         price: Sequelize.DECIMAL,
         offer_price: Sequelize.DECIMAL,
+
+        installments: Sequelize.INTEGER,
+        product_condition: Sequelize.STRING,
+
+        average_rating: Sequelize.DECIMAL,
+        reviews_count: Sequelize.INTEGER,
+
         stock: Sequelize.INTEGER,
         featured: Sequelize.BOOLEAN,
         path: Sequelize.STRING,
         warranty: Sequelize.INTEGER,
+
         url: {
           type: Sequelize.VIRTUAL,
-          get(){
-            return `http://localhost:3001/product-file/${this.path}`
-          }
-        }
+          get() {
+            return `http://localhost:3001/product-file/${this.path}`;
+          },
+        },
       },
       {
         sequelize,
