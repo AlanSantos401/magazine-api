@@ -12,6 +12,7 @@ import UserController from './app/controllers/UserController.js';
 import multerConfig from './config/multer.cjs';
 import AdminMiddleware from './middlewares/admin.js';
 import authMiddleware from './middlewares/auth.js';
+import OrderController from './app/controllers/OrderController.js';
 
 const routes = new Router();
 
@@ -35,11 +36,7 @@ routes.get('/addresses', AddressController.index);
 routes.patch('/addresses/:id', AddressController.update);
 routes.delete('/addresses/:id', AddressController.delete);
 
-routes.post(
-  '/products',
-  AdminMiddleware,
-  ProductController.store,
-);
+routes.post('/products', AdminMiddleware, ProductController.store);
 routes.get('/products', ProductController.index);
 routes.patch('/products/:id', AdminMiddleware, ProductController.update);
 routes.delete('/products/:id', AdminMiddleware, ProductController.delete);
@@ -64,5 +61,7 @@ routes.delete(
 
 routes.post('/categories', AdminMiddleware, CategoryController.store);
 routes.get('/categories', CategoryController.index);
+
+routes.post('/orders', AdminMiddleware, OrderController.store);
 
 export default routes;

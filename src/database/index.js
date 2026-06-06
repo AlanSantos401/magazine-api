@@ -5,14 +5,15 @@ import Product from '../app/models/Product.js';
 import ProductVariation from '../app/models/ProductVariation.js';
 import User from '../app/models/User.js';
 
-
 import databaseConfig from '../config/database.cjs';
+import mongoose from 'mongoose';
 
 const models = [User, Product, ProductVariation, Category, Address];
 
 class Database {
   constructor() {
     this.init();
+    this.mongo();
   }
 
   init() {
@@ -26,6 +27,12 @@ class Database {
         model.associate(this.connection.models);
       }
     });
+  }
+
+  mongo() {
+    this.mongooseConection = mongoose.connect(
+      'mongodb://localhost:27017/jgames',
+    );
   }
 }
 
