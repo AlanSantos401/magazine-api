@@ -12,7 +12,17 @@ class UserController {
         .required(),
       email: Yup.string().email().required(),
       password: Yup.string().min(6).required(),
-      admin: Yup.boolean(),
+      phone: Yup.string()
+        .required()
+        .min(10)
+        .max(11)
+        .matches(/^\d+$/, 'Telefone inválido'),
+      gender: Yup.string().oneOf([
+        'male',
+        'female',
+        'other',
+        'prefer_not_to_say',
+      ]),
     });
 
     try {
@@ -21,7 +31,7 @@ class UserController {
       return response.status(400).json({ error: err.errors });
     }
 
-    const { name, email, password, admin } = request.body;
+    const { name, email, password, phone, gender } = request.body;
 
     const existingUser = await User.findOne({
       where: {
@@ -43,8 +53,9 @@ class UserController {
       id: v4(),
       name,
       email,
+      phone,
+      gender,
       password_hash,
-      admin,
       email_code,
       email_confirmed: false,
     });
@@ -53,7 +64,81 @@ class UserController {
       id: user.id,
       name: user.name,
       email: user.email,
-      admin: user.admin,
+      phone: user.phone,
+      gender: user.gender,
+    });
+  }
+
+  async update(request, response) {
+    const schema = Yup.object({
+      name: Yup.string().matches(/^[A-Za-zÀ-ÿ\s]+$/),
+
+      phone: Yup.string().min(10).max(11).matches(/^\d+$/, 'Telefone inválido'),
+
+      gender: Yup.string().oneOf([
+        'male',
+        'female',
+        'other',
+        'prefer_not_to_say',
+      ]),
+    });
+
+    try {
+      await schema.validate(request.body, {
+        abortEarly: false,
+      });
+    } catch (err) {
+      return response.status(400).json({
+        error: err.errors,
+      });
+    }
+
+    const user = await User.findByPk(request.userId);
+
+    if (!user) {
+      return response.status(404).json({
+        error: 'Usuário não encontrado',
+      });
+    }
+
+    const {
+      email,
+      admin,
+      password_hash,
+      email_code,
+      email_confirmed,
+      password_reset_token,
+      password_reset_expires,
+      ...data
+    } = request.body;
+
+    await user.update(data);
+
+    return response.status(200).json({
+      message: 'Perfil atualizado com sucesso',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+      },
+    });
+  }
+
+  async delete(request, response) {
+    const user = await User.findByPk(request.userId);
+
+    if (!user) {
+      return response.status(404).json({
+        error: 'Usuário não encontrado',
+      });
+    }
+
+    await user.destroy();
+
+    return response.status(200).json({
+      message: 'Conta excluída com sucesso',
     });
   }
 }

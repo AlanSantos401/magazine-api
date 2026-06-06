@@ -53,15 +53,23 @@ class SessionController {
       return emailOrPasswordIncorrect();
     }
 
-    const token = jwt.sign({ id: existingUser.id, admin: existingUser.admin }, authConfig.secret, {
-      expiresIn: authConfig.expiresIn,
-    });
+    const token = jwt.sign(
+      { id: existingUser.id, admin: existingUser.admin },
+      authConfig.secret,
+      {
+        expiresIn: authConfig.expiresIn,
+      },
+    );
 
     return response.status(200).json({
-      id: existingUser.id,
-      name: existingUser.name,
-      email: existingUser.email,
-      admin: existingUser.admin,
+      user: {
+        id: existingUser.id,
+        name: existingUser.name,
+        email: existingUser.email,
+        phone: existingUser.phone,
+        gender: existingUser.gender,
+        admin: existingUser.admin,
+      },
       token,
     });
   }

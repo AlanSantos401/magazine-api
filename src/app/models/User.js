@@ -6,6 +6,8 @@ class User extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
+        phone: Sequelize.STRING,
+        gender: Sequelize.STRING,
         password_hash: Sequelize.STRING,
         admin: Sequelize.BOOLEAN,
         email_code: Sequelize.STRING,
@@ -21,6 +23,15 @@ class User extends Model {
         tableName: 'users',
       },
     );
+
+    return this;
+  }
+
+  static associate(models) {
+    this.hasMany(models.Address, {
+      foreignKey: 'user_id',
+      as: 'addresses',
+    });
   }
 }
 

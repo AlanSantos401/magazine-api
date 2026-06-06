@@ -8,14 +8,9 @@ class ProductController {
       description: Yup.string(),
       brand: Yup.string().required(),
 
-      old_price: Yup.number(),
-      price: Yup.number().required(),
-      offer_price: Yup.number(),
-
       installments: Yup.number(),
       product_condition: Yup.string(),
 
-      stock: Yup.number().required(),
       featured: Yup.boolean(),
       warranty: Yup.number(),
       category_id: Yup.number().required(),
@@ -36,56 +31,57 @@ class ProductController {
       description,
       brand,
 
-      old_price,
-      price,
-      offer_price,
-
       installments,
       product_condition,
 
-      stock,
       featured,
       warranty,
       category_id,
     } = request.body;
-
-    const filename = request.file?.filename || null;
 
     const newProduct = await Product.create({
       name,
       description,
       brand,
 
-      old_price,
-      price,
-      offer_price,
-
       installments,
       product_condition,
 
-      stock,
       featured,
       warranty,
       category_id,
-
-      path: filename,
     });
 
     return response.status(201).json(newProduct);
   }
 
   async index(_request, response) {
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+      include: [
+        {
+          association: 'variations',
+        },
+        {
+          association: 'category',
+        },
+      ],
+    });
 
     return response.status(200).json(products);
   }
 
   async update(request, response) {
     const schema = Yup.object({
-      old_price: Yup.number(),
-      price: Yup.number(),
-      offer_price: Yup.number(),
-      stock: Yup.number(),
+      name: Yup.string(),
+      description: Yup.string(),
+      brand: Yup.string(),
+
+      installments: Yup.number(),
+      product_condition: Yup.string(),
+
+      featured: Yup.boolean(),
+      warranty: Yup.number(),
+      category_id: Yup.number(),
     });
 
     try {
@@ -110,21 +106,26 @@ class ProductController {
 
     await product.update(request.body);
 
-    return response.json({message: "Produto atualizado com sucesso", product});
+    return response.json({
+      message: 'Produto atualizado com sucesso',
+      product,
+    });
   }
 
   async delete(request, response) {
-    const {id} = request.params
+    const { id } = request.params;
 
-    const product = await Product.findByPk(id)
+    const product = await Product.findByPk(id);
 
-    if(!product) {
-      return response.status(404).json({error: 'Produto não encontrado'})
+    if (!product) {
+      return response.status(404).json({ error: 'Produto não encontrado' });
     }
 
-    await product.destroy()
+    await product.destroy();
 
-    return response.status(200).json({message: "Produto excluído com sucesso"})
+    return response
+      .status(200)
+      .json({ message: 'Produto excluído com sucesso' });
   }
 }
 
