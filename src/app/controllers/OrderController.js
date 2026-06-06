@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import Product from '../models/Product.js';
 import ProductVariation from '../models/ProductVariation.js';
+import Order from '../schemas/Order.js';
 
 class OrderController {
   async store(request, response) {
@@ -68,7 +69,9 @@ class OrderController {
       status: "Pedido realizado"
     };
 
-    return response.status(201).json(order);
+    const newOrder = await Order.create(order)
+
+    return response.status(201).json(newOrder);
   }
 }
 
