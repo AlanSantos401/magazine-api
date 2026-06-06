@@ -66,12 +66,46 @@ class OrderController {
         name: userName,
       },
       products: formatedProducts,
-      status: "Pedido realizado"
+      status: 'Pedido realizado',
     };
 
-    const newOrder = await Order.create(order)
+    const newOrder = await Order.create(order);
 
     return response.status(201).json(newOrder);
+  }
+
+  async update(request, response) {
+    const schema = Yup.object({
+      status: Yup.string().required(),
+    });
+
+    try {
+      schema.validateSync(request.body, {
+        abortEarly: false,
+        strict: true,
+      });
+    } catch (err) {
+      return response.status(400).json({
+        error: err.errors,
+      });
+    }
+
+    const { status } = request.body;
+    const { id } = request.params;
+
+    try {
+   await Order.updateOne( { _id: id },{ status });
+    } catch (err) {
+      return response.status(400).json({error: err.message})
+    }
+
+    return response.status(200).json({message: "Status updated successfully"});
+  }
+
+  async index(request, response) {
+    const orders = await Order.find()
+
+   return response.status(200).json(orders)
   }
 }
 

@@ -1,14 +1,14 @@
+import mongoose from 'mongoose';
 import { Sequelize } from 'sequelize';
 import Address from '../app/models/Address.js';
+import Banner from '../app/models/Banner.js';
 import Category from '../app/models/Category.js';
 import Product from '../app/models/Product.js';
 import ProductVariation from '../app/models/ProductVariation.js';
 import User from '../app/models/User.js';
-
 import databaseConfig from '../config/database.cjs';
-import mongoose from 'mongoose';
 
-const models = [User, Product, ProductVariation, Category, Address];
+const models = [User, Product, ProductVariation, Category, Address, Banner];
 
 class Database {
   constructor() {
