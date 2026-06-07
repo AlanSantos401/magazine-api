@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/product-file', fileRouteConfig);
-app.use("/banner-flie", fileRouteConfig)
+app.use("/banner-file", fileRouteConfig)
 
 app.use(routes);
 

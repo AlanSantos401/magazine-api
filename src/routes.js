@@ -70,6 +70,7 @@ routes.delete(
 );
 
 routes.post('/categories', AdminMiddleware, CategoryController.store);
+routes.patch('/categories/:id/image', upload.single('file'), CategoryController.updateImage);
 
 routes.put('/orders/:id', AdminMiddleware, OrderController.update);
 

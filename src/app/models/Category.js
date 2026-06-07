@@ -5,6 +5,7 @@ class Category extends Model {
     super.init(
       {
         name: Sequelize.STRING,
+        path: Sequelize.STRING,
         slug: Sequelize.STRING,
         parent_id: Sequelize.INTEGER,
       },

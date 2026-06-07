@@ -6,7 +6,8 @@ class CategoryController {
   async store(request, response) {
     const schema = Yup.object({
       name: Yup.string().required(),
-       parent_id: Yup.number().nullable(),
+      parent_id: Yup.number().nullable(),
+       path: Yup.string().nullable(),
     });
 
     try {
@@ -49,6 +50,23 @@ class CategoryController {
 
     return response.status(200).json(categories);
   }
+
+  async updateImage(request, response) {
+  const { id } = request.params;
+
+  const category = await Category.findByPk(id);
+
+  if (!category) {
+    return response.status(404).json({ error: 'Categoria não encontrada' });
+  }
+
+  category.path = request.file.filename;
+
+  await category.save();
+
+  return response.json(category);
+}
+
 }
 
 export default new CategoryController();
