@@ -122,20 +122,36 @@ class ProductController {
   }
 
   async delete(request, response) {
-    const { id } = request.params;
+  const { id } = request.params;
 
-    const product = await Product.findByPk(id);
+  const product = await Product.findByPk(id);
 
-    if (!product) {
-      return response.status(404).json({ error: 'Produto não encontrado' });
-    }
-
-    await product.destroy();
-
-    return response
-      .status(200)
-      .json({ message: 'Produto excluído com sucesso' });
+  if (!product) {
+    return response.status(404).json({ error: 'Produto não encontrado' });
   }
+
+  await ProductVariation.destroy({
+    where: { product_id: id },
+  });
+
+  await ProductImages.destroy({
+    where: { product_id: id },
+  });
+
+  await ProductHighlights.destroy({
+    where: { product_id: id },
+  });
+
+  await ProductSpecifications.destroy({
+    where: { product_id: id },
+  });
+
+  await product.destroy();
+
+  return response.status(200).json({
+    message: 'Produto excluído com sucesso',
+  });
+}
 }
 
 export default new ProductController();
