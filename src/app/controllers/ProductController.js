@@ -4,20 +4,16 @@ import Product from '../models/Product.js';
 class ProductController {
   async store(request, response) {
     const schema = Yup.object({
+      category_id: Yup.number().required(),
       name: Yup.string().required(),
       description: Yup.string(),
       brand: Yup.string().required(),
-
-      installments: Yup.number(),
       product_condition: Yup.string(),
-
       featured: Yup.boolean(),
-      warranty: Yup.number(),
-      category_id: Yup.number().required(),
     });
 
     try {
-      schema.validateSync(request.body, {
+      await schema.validate(request.body, {
         abortEarly: false,
       });
     } catch (err) {
@@ -27,29 +23,21 @@ class ProductController {
     }
 
     const {
+      category_id,
       name,
       description,
       brand,
-
-      installments,
       product_condition,
-
       featured,
-      warranty,
-      category_id,
     } = request.body;
 
     const newProduct = await Product.create({
+      category_id,
       name,
       description,
       brand,
-
-      installments,
       product_condition,
-
       featured,
-      warranty,
-      category_id,
     });
 
     return response.status(201).json(newProduct);
@@ -59,10 +47,19 @@ class ProductController {
     const products = await Product.findAll({
       include: [
         {
+          association: 'category',
+        },
+        {
           association: 'variations',
         },
         {
-          association: 'category',
+          association: 'product_images',
+        },
+        {
+          association: 'product_highlights',
+        },
+        {
+          association: 'product_specifications',
         },
       ],
     });
@@ -72,16 +69,12 @@ class ProductController {
 
   async update(request, response) {
     const schema = Yup.object({
+      category_id: Yup.number(),
       name: Yup.string(),
       description: Yup.string(),
       brand: Yup.string(),
-
-      installments: Yup.number(),
       product_condition: Yup.string(),
-
       featured: Yup.boolean(),
-      warranty: Yup.number(),
-      category_id: Yup.number(),
     });
 
     try {
@@ -104,7 +97,23 @@ class ProductController {
       });
     }
 
-    await product.update(request.body);
+    const {
+      category_id,
+      name,
+      description,
+      brand,
+      product_condition,
+      featured,
+    } = request.body;
+
+    await product.update({
+      category_id,
+      name,
+      description,
+      brand,
+      product_condition,
+      featured,
+    });
 
     return response.json({
       message: 'Produto atualizado com sucesso',

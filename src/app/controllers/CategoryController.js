@@ -6,7 +6,6 @@ class CategoryController {
   async store(request, response) {
     const schema = Yup.object({
       name: Yup.string().required(),
-      parent_id: Yup.number().nullable(),
        path: Yup.string().nullable(),
     });
 
@@ -20,7 +19,7 @@ class CategoryController {
       });
     }
 
-    const { name, parent_id } = request.body;
+    const { name } = request.body;
 
     const categoryExists = await Category.findOne({
       where: {
@@ -36,7 +35,6 @@ class CategoryController {
 
     const newCategory = await Category.create({
       name,
-      parent_id,
       slug: slugify(name, {
         lower: true,
       }),

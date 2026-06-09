@@ -7,7 +7,6 @@ class Category extends Model {
         name: Sequelize.STRING,
         path: Sequelize.STRING,
         slug: Sequelize.STRING,
-        parent_id: Sequelize.INTEGER,
       },
       {
         sequelize,

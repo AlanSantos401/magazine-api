@@ -4,18 +4,12 @@ class Product extends Model {
   static init(sequelize) {
     super.init(
       {
+        category_id: Sequelize.INTEGER,
         name: Sequelize.STRING,
         description: Sequelize.STRING,
         brand: Sequelize.STRING,
-
-        installments: Sequelize.INTEGER,
         product_condition: Sequelize.STRING,
-
-        average_rating: Sequelize.DECIMAL,
-        reviews_count: Sequelize.INTEGER,
-
         featured: Sequelize.BOOLEAN,
-        warranty: Sequelize.INTEGER,
       },
       {
         sequelize,
@@ -28,7 +22,7 @@ class Product extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Category, {
+    this.belongsTo(models.SubCategory, {
       foreignKey: 'category_id',
       as: 'category',
     });
@@ -36,6 +30,21 @@ class Product extends Model {
     this.hasMany(models.ProductVariation, {
       foreignKey: 'product_id',
       as: 'variations',
+    });
+
+    this.hasMany(models.ProductImages, {
+      foreignKey: 'product_id',
+      as: 'product_images',
+    });
+
+    this.hasMany(models.ProductHighlights, {
+      foreignKey: 'product_id',
+      as: 'product_highlights',
+    });
+
+    this.hasMany(models.ProductSpecifications, {
+      foreignKey: 'product_id',
+      as: 'product_specifications',
     });
   }
 }

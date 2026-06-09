@@ -1,19 +1,18 @@
 import Sequelize, { Model } from 'sequelize';
 
-class ProductVariation extends Model {
+class ProductSpecifications extends Model {
   static init(sequelize) {
     super.init(
       {
         product_id: Sequelize.INTEGER,
-        sku: Sequelize.STRING,
-        color: Sequelize.STRING,
-        price: Sequelize.DECIMAL,
-        offer_price: Sequelize.DECIMAL,
-        stock: Sequelize.INTEGER,
+
+        key: Sequelize.STRING,
+
+        value: Sequelize.STRING,
       },
       {
         sequelize,
-        tableName: 'product_variations',
+        tableName: 'product_specifications',
         underscored: true,
       },
     );
@@ -29,4 +28,4 @@ class ProductVariation extends Model {
   }
 }
 
-export default ProductVariation;
+export default ProductSpecifications;

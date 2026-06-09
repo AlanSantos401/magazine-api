@@ -6,6 +6,7 @@ class Banner extends Model {
       {
         path: Sequelize.STRING,
         active: Sequelize.BOOLEAN,
+        theme: Sequelize.STRING,
          url: {
           type: Sequelize.VIRTUAL,
           get() {

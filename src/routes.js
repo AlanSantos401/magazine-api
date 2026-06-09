@@ -8,9 +8,13 @@ import ConfirmEmailController from './app/controllers/ConfirmEmailController.js'
 import ForgotPasswordController from './app/controllers/ForgotPasswordController.js';
 import OrderController from './app/controllers/OrderController.js';
 import ProductController from './app/controllers/ProductController.js';
+import ProductHighlightsController from './app/controllers/ProductHighlightsController.js';
+import ProductImagesController from './app/controllers/ProductImagesController.js';
+import ProductSpecificationsController from './app/controllers/ProductSpecificationsController.js';
 import ProductVariationController from './app/controllers/ProductVariationController.js';
 import ResetPasswordController from './app/controllers/ResetPasswordController.js';
 import SessionController from './app/controllers/SessionController.js';
+import SubCategoryController from './app/controllers/SubCategoryController.js';
 import UserController from './app/controllers/UserController.js';
 
 import AdminMiddleware from './app/middlewares/admin.js';
@@ -29,6 +33,8 @@ routes.get('/confirm-email', ConfirmEmailController.update);
 routes.post('/forgot-password', ForgotPasswordController.store);
 routes.put('/reset-password', ResetPasswordController.update);
 
+routes.get('/subcategories', SubCategoryController.index);
+
 routes.get('/products', ProductController.index);
 routes.get('/product-variations', ProductVariationController.index);
 routes.get('/categories', CategoryController.index);
@@ -46,6 +52,14 @@ routes.delete('/addresses/:id', AddressController.delete);
 
 routes.post('/orders', OrderController.store);
 routes.get('/orders', OrderController.index);
+
+routes.post('/subcategories', AdminMiddleware, SubCategoryController.store);
+
+routes.delete(
+  '/subcategories/:id',
+  AdminMiddleware,
+  SubCategoryController.delete,
+);
 
 routes.post('/products', AdminMiddleware, ProductController.store);
 routes.patch('/products/:id', AdminMiddleware, ProductController.update);
@@ -70,7 +84,49 @@ routes.delete(
 );
 
 routes.post('/categories', AdminMiddleware, CategoryController.store);
-routes.patch('/categories/:id/image', upload.single('file'), CategoryController.updateImage);
+routes.patch(
+  '/categories/:id/image',
+  upload.single('file'),
+  CategoryController.updateImage,
+);
+
+routes.post(
+  '/product-specifications',
+  AdminMiddleware,
+  ProductSpecificationsController.store,
+);
+
+routes.get('/product-specifications', ProductSpecificationsController.index);
+
+routes.delete(
+  '/product-specifications/:id',
+  AdminMiddleware,
+  ProductSpecificationsController.delete,
+);
+
+routes.post(
+  '/product-highlights',
+  AdminMiddleware,
+  ProductHighlightsController.store,
+);
+
+routes.get('/product-highlights', ProductHighlightsController.index);
+
+routes.delete(
+  '/product-highlights/:id',
+  AdminMiddleware,
+  ProductHighlightsController.delete,
+);
+
+routes.post('/product-images', AdminMiddleware, ProductImagesController.store);
+
+routes.get('/product-images', ProductImagesController.index);
+
+routes.delete(
+  '/product-images/:id',
+  AdminMiddleware,
+  ProductImagesController.delete,
+);
 
 routes.put('/orders/:id', AdminMiddleware, OrderController.update);
 
