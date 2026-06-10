@@ -6,15 +6,6 @@ class ProductImagesController {
   async store(request, response) {
     const schema = Yup.object({
       product_id: Yup.number().required(),
-      images: Yup.array()
-        .of(
-          Yup.object({
-            path: Yup.string().required(),
-          }),
-        )
-        .min(2)
-        .max(4)
-        .required(),
     });
 
     try {
@@ -27,8 +18,10 @@ class ProductImagesController {
       });
     }
 
-    const { product_id, images } = request.body;
+    const { product_id } = request.body;
+    const files = request.files;
 
+    // ✔️ valida produto
     const product = await Product.findByPk(product_id);
 
     if (!product) {
@@ -37,8 +30,8 @@ class ProductImagesController {
       });
     }
 
-    // regra: máximo 4 imagens
-    if (images.length < 2 || images.length > 4) {
+    // ✔️ valida arquivos
+    if (!files || files.length < 2 || files.length > 4) {
       return response.status(400).json({
         error: 'O produto deve ter entre 2 e 4 imagens',
       });
@@ -46,12 +39,12 @@ class ProductImagesController {
 
     const createdImages = [];
 
-    for (let i = 0; i < images.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       const image = await ProductImages.create({
         product_id,
-        path: images[i].path,
+        path: files[i].filename,
         position: i + 1,
-        is_main: i === 0, // primeira é principal
+        is_main: i === 0,
       });
 
       createdImages.push(image);

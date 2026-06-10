@@ -37,7 +37,10 @@ routes.get('/subcategories', SubCategoryController.index);
 
 routes.get('/products', ProductController.index);
 routes.get('/product-variations', ProductVariationController.index);
+routes.get('/product-images', ProductImagesController.index);
 routes.get('/categories', CategoryController.index);
+routes.get('/product-specifications', ProductSpecificationsController.index);
+routes.get('/product-highlights', ProductHighlightsController.index);
 routes.get('/banners', BannerController.index);
 
 routes.use(authMiddleware);
@@ -96,8 +99,6 @@ routes.post(
   ProductSpecificationsController.store,
 );
 
-routes.get('/product-specifications', ProductSpecificationsController.index);
-
 routes.delete(
   '/product-specifications/:id',
   AdminMiddleware,
@@ -110,18 +111,18 @@ routes.post(
   ProductHighlightsController.store,
 );
 
-routes.get('/product-highlights', ProductHighlightsController.index);
-
 routes.delete(
   '/product-highlights/:id',
   AdminMiddleware,
   ProductHighlightsController.delete,
 );
 
-routes.post('/product-images', AdminMiddleware, ProductImagesController.store);
-
-routes.get('/product-images', ProductImagesController.index);
-
+routes.post(
+  '/product-images',
+  AdminMiddleware,
+  upload.array('images', 4),
+  ProductImagesController.store
+);
 routes.delete(
   '/product-images/:id',
   AdminMiddleware,
