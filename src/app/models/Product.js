@@ -10,6 +10,7 @@ class Product extends Model {
         brand: Sequelize.STRING,
         product_condition: Sequelize.STRING,
         featured: Sequelize.BOOLEAN,
+        product_type: Sequelize.STRING
       },
       {
         sequelize,
@@ -24,7 +25,7 @@ class Product extends Model {
   static associate(models) {
     this.belongsTo(models.SubCategory, {
       foreignKey: 'category_id',
-      as: 'category',
+      as: 'subcategory',
     });
 
     this.hasMany(models.ProductVariation, {
@@ -33,8 +34,8 @@ class Product extends Model {
     });
 
     this.hasMany(models.ProductImages, {
-      foreignKey: 'product_id',
-      as: 'product_images',
+      foreignKey: 'variation_id',
+      as: 'images',
     });
 
     this.hasMany(models.ProductHighlights, {

@@ -26,6 +26,11 @@ class ProductVariation extends Model {
       foreignKey: 'product_id',
       as: 'product',
     });
+
+    this.hasMany(models.ProductImages, {
+      foreignKey: 'variation_id',
+      as: 'images',
+    });
   }
 }
 

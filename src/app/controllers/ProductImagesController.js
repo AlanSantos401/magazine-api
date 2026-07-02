@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import Product from '../models/Product.js';
 import ProductImages from '../models/ProductImages.js';
+import ProductVariation from '../models/ProductVariation.js';
 
 class ProductImagesController {
   async store(request, response) {
     const schema = Yup.object({
-      product_id: Yup.number().required(),
+      variation_id: Yup.number().required(),
     });
 
     try {
@@ -18,15 +18,15 @@ class ProductImagesController {
       });
     }
 
-    const { product_id } = request.body;
+    const { variation_id } = request.body;
     const files = request.files;
 
     // ✔️ valida produto
-    const product = await Product.findByPk(product_id);
+    const variation = await ProductVariation.findByPk(variation_id);
 
-    if (!product) {
+    if (!variation) {
       return response.status(404).json({
-        error: 'Produto não encontrado',
+        error: 'Variação não encontrada',
       });
     }
 
@@ -38,17 +38,22 @@ class ProductImagesController {
     }
 
     const createdImages = [];
+for (const [index, file] of files.entries()) {
+  console.log({
+    variation_id,
+    path: file.filename,
+    position: index + 1,
+  });
 
-    for (let i = 0; i < files.length; i++) {
-      const image = await ProductImages.create({
-        product_id,
-        path: files[i].filename,
-        position: i + 1,
-        is_main: i === 0,
-      });
+  const image = await ProductImages.create({
+    variation_id,
+    path: file.filename,
+    position: index + 1,
+    is_main: index === 0,
+  });
 
-      createdImages.push(image);
-    }
+  createdImages.push(image);
+}
 
     return response.status(201).json(createdImages);
   }
@@ -57,7 +62,7 @@ class ProductImagesController {
     const images = await ProductImages.findAll({
       include: [
         {
-          association: 'product',
+          association: 'variation',
         },
       ],
       order: [['position', 'ASC']],

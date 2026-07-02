@@ -12,10 +12,22 @@ class Category extends Model {
         sequelize,
         tableName: 'categories',
         underscored: true,
-      },
+      }
     );
 
     return this;
+  }
+
+  static associate(models) {
+    this.hasMany(models.SubCategory, {
+      foreignKey: 'parent_id',
+      as: 'subcategories',
+    });
+
+    this.hasMany(models.Product, {
+      foreignKey: 'category_id',
+      as: 'products',
+    });
   }
 }
 

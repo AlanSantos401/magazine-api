@@ -25,6 +25,12 @@ import multerConfig from './config/multer.cjs';
 const routes = new Router();
 const upload = multer(multerConfig);
 
+//
+// =======================
+// 🔓 PUBLIC ROUTES
+// =======================
+//
+
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
@@ -33,17 +39,33 @@ routes.get('/confirm-email', ConfirmEmailController.update);
 routes.post('/forgot-password', ForgotPasswordController.store);
 routes.put('/reset-password', ResetPasswordController.update);
 
+// catálogo público
+routes.get('/categories', CategoryController.index);
+routes.get('/categories/:slug', CategoryController.show);
+routes.get('/categories/:slug/products', CategoryController.products);
 routes.get('/subcategories', SubCategoryController.index);
-
 routes.get('/products', ProductController.index);
+
 routes.get('/product-variations', ProductVariationController.index);
 routes.get('/product-images', ProductImagesController.index);
-routes.get('/categories', CategoryController.index);
 routes.get('/product-specifications', ProductSpecificationsController.index);
 routes.get('/product-highlights', ProductHighlightsController.index);
+
 routes.get('/banners', BannerController.index);
 
+//
+// =======================
+// 🔐 AUTH MIDDLEWARE
+// =======================
+//
+
 routes.use(authMiddleware);
+
+//
+// =======================
+// 🔐 PRIVATE ROUTES (USER)
+// =======================
+//
 
 routes.patch('/users/me', UserController.update);
 routes.delete('/users/me', UserController.delete);
@@ -56,88 +78,39 @@ routes.delete('/addresses/:id', AddressController.delete);
 routes.post('/orders', OrderController.store);
 routes.get('/orders', OrderController.index);
 
-routes.post('/subcategories', AdminMiddleware, SubCategoryController.store);
+//
+// =======================
+// 👑 ADMIN ROUTES
+// =======================
+//
 
-routes.delete(
-  '/subcategories/:id',
-  AdminMiddleware,
-  SubCategoryController.delete,
-);
+routes.post('/subcategories', AdminMiddleware, SubCategoryController.store);
+routes.delete('/subcategories/:id', AdminMiddleware, SubCategoryController.delete);
 
 routes.post('/products', AdminMiddleware, ProductController.store);
 routes.patch('/products/:id', AdminMiddleware, ProductController.update);
 routes.delete('/products/:id', AdminMiddleware, ProductController.delete);
 
-routes.post(
-  '/product-variations',
-  AdminMiddleware,
-  upload.single('file'),
-  ProductVariationController.store,
-);
-routes.put(
-  '/product-variations/:id',
-  AdminMiddleware,
-  upload.single('file'),
-  ProductVariationController.update,
-);
-routes.delete(
-  '/product-variations/:id',
-  AdminMiddleware,
-  ProductVariationController.delete,
-);
+routes.post('/product-variations', AdminMiddleware, upload.single('file'), ProductVariationController.store);
+routes.put('/product-variations/:id', AdminMiddleware, upload.single('file'), ProductVariationController.update);
+routes.delete('/product-variations/:id', AdminMiddleware, ProductVariationController.delete);
+
+routes.post('/product-specifications', AdminMiddleware, ProductSpecificationsController.store);
+routes.delete('/product-specifications/:id', AdminMiddleware, ProductSpecificationsController.delete);
+
+routes.post('/product-highlights', AdminMiddleware, ProductHighlightsController.store);
+routes.delete('/product-highlights/:id', AdminMiddleware, ProductHighlightsController.delete);
+
+routes.post('/product-images', AdminMiddleware, upload.array('images', 4), ProductImagesController.store);
+routes.delete('/product-images/:id', AdminMiddleware, ProductImagesController.delete);
 
 routes.post('/categories', AdminMiddleware, CategoryController.store);
-routes.patch(
-  '/categories/:id/image',
-  upload.single('file'),
-  CategoryController.updateImage,
-);
+routes.patch('/categories/:id/image', upload.single('file'), CategoryController.updateImage);
 
-routes.post(
-  '/product-specifications',
-  AdminMiddleware,
-  ProductSpecificationsController.store,
-);
-
-routes.delete(
-  '/product-specifications/:id',
-  AdminMiddleware,
-  ProductSpecificationsController.delete,
-);
-
-routes.post(
-  '/product-highlights',
-  AdminMiddleware,
-  ProductHighlightsController.store,
-);
-
-routes.delete(
-  '/product-highlights/:id',
-  AdminMiddleware,
-  ProductHighlightsController.delete,
-);
-
-routes.post(
-  '/product-images',
-  AdminMiddleware,
-  upload.array('images', 4),
-  ProductImagesController.store
-);
-routes.delete(
-  '/product-images/:id',
-  AdminMiddleware,
-  ProductImagesController.delete,
-);
-
-routes.put('/orders/:id', AdminMiddleware, OrderController.update);
-
-routes.post(
-  '/banners',
-  AdminMiddleware,
-  upload.single('file'),
-  BannerController.store,
-);
+routes.post('/banners', AdminMiddleware, upload.single('file'), BannerController.store);
 routes.patch('/banners/:id/toggle', AdminMiddleware, BannerController.toggle);
 routes.delete('/banners/:id', AdminMiddleware, BannerController.delete);
+
+routes.put('/orders/:id', AdminMiddleware, OrderController.update);
 
 export default routes;

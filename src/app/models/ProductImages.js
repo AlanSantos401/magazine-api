@@ -4,7 +4,7 @@ class ProductImages extends Model {
   static init(sequelize) {
     super.init(
       {
-        product_id: Sequelize.INTEGER,
+        variation_id: Sequelize.INTEGER,
         path: Sequelize.STRING,
         position: {
           type: Sequelize.INTEGER,
@@ -32,9 +32,9 @@ class ProductImages extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Product, {
-      foreignKey: 'product_id',
-      as: 'product',
+    this.belongsTo(models.ProductVariation, {
+      foreignKey: 'variation_id',
+      as: 'variation',
     });
   }
 }

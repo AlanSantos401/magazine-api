@@ -14,7 +14,7 @@ class ProductSpecificationsController {
           }),
         )
         .min(5)
-        .max(10)
+        .max(20)
         .required(),
     });
 
@@ -39,9 +39,9 @@ class ProductSpecificationsController {
     }
 
     // regra extra de segurança
-    if (specifications.length < 5 || specifications.length > 10) {
+    if (specifications.length < 5 || specifications.length > 20) {
       return response.status(400).json({
-        error: 'As especificações devem ter entre 5 e 10 itens',
+        error: 'As especificações devem ter entre 5 e 20 itens',
       });
     }
 
