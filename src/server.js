@@ -1,4 +1,8 @@
 import app from './app.js';
 import './database/index.js';
 
-app.listen(3001, () => console.log('Aplicação rodando na porta 3001 ✅🚀'));
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Aplicação rodando na porta ${PORT} ✅🚀`);
+});
