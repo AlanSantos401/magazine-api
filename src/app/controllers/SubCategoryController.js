@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import Category from '../models/Category.js';
 import SubCategory from '../models/SubCategory.js';
 
-class SubcategoryController {
+class SubCategoryController {
   async store(request, response) {
     const schema = Yup.object({
       name: Yup.string().required(),
@@ -88,4 +88,4 @@ class SubcategoryController {
 }
 }
 
-export default new SubcategoryController();
+export default new SubCategoryController();
