@@ -8,7 +8,7 @@ import ProductHighlights from '../app/models/ProductHighlights.js';
 import ProductImages from '../app/models/ProductImages.js';
 import ProductSpecifications from '../app/models/ProductSpecifications.js';
 import ProductVariation from '../app/models/ProductVariation.js';
-import SubCategory from '../app/models/Subcategory.js';
+import SubCategory from '../app/models/SubCategory.js';
 import User from '../app/models/User.js';
 import databaseConfig from '../config/database.cjs';
 
