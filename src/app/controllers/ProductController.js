@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Product from '../models/Product.js';
+import { Op } from 'sequelize';
 
 class ProductController {
   async store(request, response) {
@@ -11,6 +12,10 @@ class ProductController {
       product_condition: Yup.string(),
       product_type: Yup.string().required(),
       featured: Yup.boolean(),
+      weight: Yup.number().nullable(),
+      height: Yup.number().nullable(),
+      width: Yup.number().nullable(),
+      length: Yup.number().nullable(),
     });
 
     try {
@@ -31,6 +36,10 @@ class ProductController {
       product_type,
       product_condition,
       featured,
+      weight,
+      height,
+      width,
+      length,
     } = request.body;
 
     const newProduct = await Product.create({
@@ -41,60 +50,81 @@ class ProductController {
       product_type,
       product_condition,
       featured,
+      weight,
+      height,
+      width,
+      length,
     });
 
     return response.status(201).json(newProduct);
   }
 
-  async index(_request, response) {
-    try {
-      const products = await Product.findAll({
-        include: [
-          // 🔥 SubCategory do produto
-          {
-            association: 'subcategory',
-            attributes: ['id', 'name', 'slug', 'parent_id'],
-            include: [
-              // 🔥 Category da subcategoria
-              {
-                association: 'category',
-                attributes: ['id', 'name'],
-              },
-            ],
-          },
+  async index(request, response) {
+  try {
+    const { search } = request.query;
 
-          // 🔥 Variações do produto
-          {
-            association: 'variations',
-            include: [
-              {
-                association: 'images',
-              },
-            ],
-          },
+    const where = {};
 
-          // 🔥 Destaques
-          {
-            association: 'product_highlights',
+    if (search) {
+      where[Op.or] = [
+        {
+          name: {
+            [Op.iLike]: `%${search}%`,
           },
-
-          // 🔥 Especificações
-          {
-            association: 'product_specifications',
-            separate: true,
-            order: [['id', 'ASC']],
+        },
+        {
+          brand: {
+            [Op.iLike]: `%${search}%`,
           },
-        ],
-      });
-
-      return response.status(200).json(products);
-    } catch (error) {
-      return response.status(500).json({
-        error: error.message,
-        parent: error.parent?.message,
-      });
+        },
+        {
+          product_type: {
+            [Op.iLike]: `%${search}%`,
+          },
+        },
+      ];
     }
+
+    const products = await Product.findAll({
+      where,
+      include: [
+        {
+          association: 'subcategory',
+          attributes: ['id', 'name', 'slug', 'parent_id'],
+          include: [
+            {
+              association: 'category',
+              attributes: ['id', 'name'],
+            },
+          ],
+        },
+        {
+          association: 'variations',
+          include: [
+            {
+              association: 'images',
+            },
+          ],
+        },
+        {
+          association: 'product_highlights',
+        },
+        {
+          association: 'product_specifications',
+          separate: true,
+          order: [['id', 'ASC']],
+        },
+      ],
+    });
+
+    return response.status(200).json(products);
+  } catch (error) {
+    return response.status(500).json({
+      error: error.message,
+      parent: error.parent?.message,
+    });
   }
+}
 
   async update(request, response) {
     const schema = Yup.object({
@@ -104,6 +134,10 @@ class ProductController {
       brand: Yup.string(),
       product_condition: Yup.string(),
       featured: Yup.boolean(),
+      weight: Yup.number().nullable(),
+height: Yup.number().nullable(),
+width: Yup.number().nullable(),
+length: Yup.number().nullable(),
     });
 
     try {
@@ -133,6 +167,10 @@ class ProductController {
       brand,
       product_condition,
       featured,
+      weight,
+      height,
+      width,
+      length,
     } = request.body;
 
     await product.update({
@@ -142,6 +180,10 @@ class ProductController {
       brand,
       product_condition,
       featured,
+      weight,
+      height,
+      width,
+      length,
     });
 
     return response.json({

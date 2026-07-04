@@ -10,7 +10,11 @@ class Product extends Model {
         brand: Sequelize.STRING,
         product_condition: Sequelize.STRING,
         featured: Sequelize.BOOLEAN,
-        product_type: Sequelize.STRING
+        product_type: Sequelize.STRING,
+        weight: Sequelize.FLOAT,
+        height: Sequelize.FLOAT,
+        width: Sequelize.FLOAT,
+        length: Sequelize.FLOAT,
       },
       {
         sequelize,

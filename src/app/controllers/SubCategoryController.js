@@ -2,7 +2,7 @@ import slugify from 'slugify';
 import * as Yup from 'yup';
 
 import Category from '../models/Category.js';
-import Subcategory from '../models/Subcategory.js';
+import SubCategory from '../models/SubCategory.js';
 
 class SubcategoryController {
   async store(request, response) {
@@ -31,7 +31,7 @@ class SubcategoryController {
       });
     }
 
-    const subcategoryExists = await Subcategory.findOne({
+    const subcategoryExists = await SubCategory.findOne({
       where: {
         name,
         parent_id,
@@ -44,7 +44,7 @@ class SubcategoryController {
       });
     }
 
-    const subcategory = await Subcategory.create({
+    const subcategory = await SubCategory.create({
       name,
       parent_id,
       slug: slugify(name, {
@@ -56,7 +56,7 @@ class SubcategoryController {
   }
 
   async index(_request, response) {
-    const subcategories = await Subcategory.findAll({
+    const subcategories = await SubCategory.findAll({
       include: [
         {
           model: Category,
@@ -72,7 +72,7 @@ class SubcategoryController {
   async delete(request, response) {
   const { id } = request.params;
 
-  const subcategory = await Subcategory.findByPk(id);
+  const subcategory = await SubCategory.findByPk(id);
 
   if (!subcategory) {
     return response.status(404).json({
